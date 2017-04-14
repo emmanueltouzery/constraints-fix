@@ -10,7 +10,6 @@ import Data.Monoid
 import Data.List
 import Data.Map (Map)
 import qualified Data.Map as Map
-import System.Environment
 import Data.Maybe
 
 data ConstraintMigrationInfo = ConstraintMigrationInfo
@@ -67,9 +66,9 @@ getConstraintMigrationInfo tableNameToOldConstraints oldConstraintsSpecs NewCons
     in
       ConstraintMigrationInfo newConstraintTableName oldConstraintName newConstraintName
 
-generateConstraintMigrations :: IO ()
-generateConstraintMigrations = do
-    oldConstraintsSpecs <- readOldConstraintsSpecs =<< head <$> getArgs
+generateConstraintMigrations :: FilePath -> IO ()
+generateConstraintMigrations sqlSchemaPath = do
+    oldConstraintsSpecs <- readOldConstraintsSpecs sqlSchemaPath
     cts <- T.replace "\n" "" <$> IO.readFile "constraints.txt"
     let tableToOldConstraint = Map.fromListWith (++) $ fmap (replicate 1) . listToPair <$>
             scanToList [re|ALTER TABLE (?<table>\w+).+?DROP CONSTRAINT (?<constraint>\w+);|] cts

@@ -1,6 +1,9 @@
 module Main where
 
 import Lib
+import System.Environment
 
 main :: IO ()
-main = generateConstraintMigrations
+main = do
+    sqlSchemaPath <- head <$> getArgs
+    generateConstraintMigrations sqlSchemaPath
