@@ -69,7 +69,7 @@ getConstraintMigrationInfo tableNameToOldConstraints oldConstraintsSpecs NewCons
 generateConstraintMigrations :: FilePath -> IO ()
 generateConstraintMigrations sqlSchemaPath = do
     oldConstraintsSpecs <- readOldConstraintsSpecs sqlSchemaPath
-    cts <- T.replace "\n" "" <$> IO.readFile "constraints.txt"
+    cts <- T.replace "\n" "" <$> IO.readFile "constraints_drop_add.txt"
     let tableToOldConstraint = Map.fromListWith (++) $ fmap (replicate 1) . listToPair <$>
             scanToList [re|ALTER TABLE (?<table>\w+).+?DROP CONSTRAINT (?<constraint>\w+);|] cts
     let tableToNewConstraint = readNewConstraintInfo <$>
